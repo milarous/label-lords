@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unsigned Artists</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .artist { border: 1px solid #ccc; padding: 10px; margin: 10px 0; }
+        button { padding: 10px; background: #007bff; color: white; border: none; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .back { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Unsigned Artists</h1>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div style="color: green; margin-bottom: 20px;">
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+    {% if game_state.unsigned_artists %}
+        {% for artist in game_state.unsigned_artists %}
+            <div class="artist">
+                <h3>{{ artist.name }} ({{ artist.genre }})</h3>
+                <p>Talent: {{ artist.talent }}</p>
+                <p>Popularity: {{ artist.popularity }}</p>
+                <p>Signing Cost: ${{ artist.signing_cost }}</p>
+                <form method="post" action="{{ url_for('sign_artist', idx=loop.index0) }}" style="display: inline;">
+                    <button type="submit">Sign for ${{ artist.signing_cost }}</button>
+                </form>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No unsigned artists left!</p>
+    {% endif %}
+    <div class="back">
+        <a href="{{ url_for('menu') }}"><button>Back to Main Menu</button></a>
+    </div>
+</body>
+</html>

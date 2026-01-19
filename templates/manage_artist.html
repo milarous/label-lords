@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage {{ artist.name }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .profile { border: 1px solid #ccc; padding: 10px; margin: 10px 0; }
+        button { display: block; width: 100%; padding: 15px; margin: 10px 0; background: #28a745; color: white; border: none; cursor: pointer; font-size: 16px; }
+        button:hover { background: #218838; }
+        .back { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Managing {{ artist.name }}</h1>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div style="color: green; margin-bottom: 20px;">
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+    <div class="profile">
+        <h3>Profile</h3>
+        <p>Name: {{ artist.name }}</p>
+        <p>Genre: {{ artist.genre }}</p>
+        <p>Talent: {{ artist.talent }}</p>
+        <p>Popularity: {{ artist.popularity }}</p>
+        <p>Signing Cost: ${{ artist.signing_cost }}</p>
+        <h4>Releases:</h4>
+        {% set singles = artist.releases | selectattr('type', 'equalto', 'Single') | list %}
+        {% set albums = artist.releases | selectattr('type', 'equalto', 'Album') | list %}
+        <p>Singles: {{ singles | length }}</p>
+        <ul>
+            {% for release in singles %}
+                <li>{{ release.name }} (Week {{ release.week }}, {{ release.year }})</li>
+            {% endfor %}
+        </ul>
+        <p>Albums: {{ albums | length }}</p>
+        <ul>
+            {% for release in albums %}
+                <li>{{ release.name }} (Week {{ release.week }}, {{ release.year }})</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <form method="post" action="{{ url_for('promote_artist_route', idx=idx) }}">
+        <button type="submit">Promote Artist ($500)</button>
+    </form>
+    <form method="post" action="{{ url_for('release_single_route', idx=idx) }}">
+        <button type="submit">Release Single ($500)</button>
+    </form>
+    <form method="post" action="{{ url_for('release_album_route', idx=idx) }}">
+        <button type="submit">Release Album ($1500)</button>
+    </form>
+    <div class="back">
+        <a href="{{ url_for('signed') }}"><button style="background: #6c757d;">Back to Signed Artists</button></a>
+    </div>
+</body>
+</html>
