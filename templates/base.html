@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Label Lords{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="app-shell">
+        <header class="app-header">
+            <div>
+                <p class="eyebrow">Label Lords</p>
+                <h1>{% block page_title %}Record Label Simulation{% endblock %}</h1>
+            </div>
+            {% if game_state and get_current_date is defined %}
+                <div class="status-pill">
+                    <span>{{ get_current_date(game_state.week, game_state.starting_year) }}</span>
+                    <span class="status-separator">•</span>
+                    <span>Funds: ${{ game_state.money }}</span>
+                </div>
+            {% endif %}
+        </header>
+
+        <main class="page-content">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="flash-panel">
+                        {% for message in messages %}
+                            <p>{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+        </main>
+
+        <footer class="app-footer">
+            <p>Built with Flask · Dark mode standard</p>
+        </footer>
+    </div>
+</body>
+</html>

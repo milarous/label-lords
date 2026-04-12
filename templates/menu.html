@@ -1,42 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ game_state.label_name }} Records - Main Menu</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 40px; text-align: center; }
-        .menu { max-width: 400px; margin: auto; }
-        button { display: block; width: 100%; padding: 15px; margin: 10px 0; background: #28a745; color: white; border: none; cursor: pointer; font-size: 16px; }
-        button:hover { background: #218838; }
-        .info { margin-bottom: 20px; }
-    </style>
-</head>
-<body>
-    <h1>{{ game_state.label_name }} Records</h1>
-    <div class="info">
+{% extends 'base.html' %}
+
+{% block title %}{{ game_state.label_name }} Records - Main Menu{% endblock %}
+
+{% block page_title %}{{ game_state.label_name }} Records{% endblock %}
+
+{% block content %}
+<section class="page-panel">
+    <div class="panel-copy">
         <p><strong>{{ get_current_date(game_state.week, game_state.starting_year) }}</strong></p>
         <p>Funds: ${{ game_state.money }}</p>
     </div>
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <div style="color: green; margin-bottom: 20px;">
-                {% for message in messages %}
-                    <p>{{ message }}</p>
-                {% endfor %}
-            </div>
-        {% endif %}
-    {% endwith %}
-    <div class="menu">
+    <div class="card-grid">
         <form action="{{ url_for('unsigned') }}">
-            <button type="submit">View Unsigned Artists</button>
+            <button class="btn btn-primary fullwidth" type="submit">View Unsigned Artists</button>
         </form>
         <form action="{{ url_for('signed') }}">
-            <button type="submit">Manage Signed Artists</button>
+            <button class="btn btn-secondary fullwidth" type="submit">Manage Signed Artists</button>
         </form>
         <form method="post" action="{{ url_for('finish_week_route') }}">
-            <button type="submit">Finish Week</button>
+            <button class="btn btn-ghost fullwidth" type="submit">Finish Week</button>
         </form>
     </div>
-</body>
-</html>
+</section>
+{% endblock %}

@@ -23,7 +23,8 @@ A record label management simulation game, migrated from tkinter to Flask web ap
 - Manage signed artists: promote, release singles/albums
 - Finish weeks to earn revenue from releases
 - Revenue depreciates over time
+- Standard dark mode UI with a modern responsive interface
 
 ## Migration Notes
 
-This app was originally a tkinter GUI application. It has been migrated to a web-based Flask application with HTML templates for the user interface.
+This app was originally a tkinter GUI application. It has been migrated to a web-based Flask application with HTML templates for the user interface. The current version uses a shared base template and dark-themed CSS for a polished browser experience.

@@ -1,32 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Signed Artists</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 40px; }
-        .artist { border: 1px solid #ccc; padding: 10px; margin: 10px 0; }
-        button { padding: 10px; background: #007bff; color: white; border: none; cursor: pointer; }
-        button:hover { background: #0056b3; }
-        .back { margin-top: 20px; }
-    </style>
-</head>
-<body>
-    <h1>{{ game_state.label_name }} Records: Signed Artists</h1>
-    <p>Funds: ${{ game_state.money }}</p>
-    {% if game_state.signed_artists %}
-        {% for artist in game_state.signed_artists %}
-            <div class="artist">
-                <h3>{{ artist.name }} ({{ artist.genre }})</h3>
-                <a href="{{ url_for('manage_artist', idx=loop.index0) }}"><button>Manage</button></a>
-            </div>
-        {% endfor %}
-    {% else %}
-        <p>You haven't signed any artists yet.</p>
-    {% endif %}
-    <div class="back">
-        <a href="{{ url_for('menu') }}"><button>Back to Main Menu</button></a>
+{% extends 'base.html' %}
+
+{% block title %}Signed Artists{% endblock %}
+
+{% block page_title %}Signed Artists{% endblock %}
+
+{% block content %}
+<section class="page-panel">
+    <div class="panel-copy">
+        <p>Funds: ${{ game_state.money }}</p>
     </div>
-</body>
-</html>
+
+    {% if game_state.signed_artists %}
+        <div class="artist-grid">
+            {% for artist in game_state.signed_artists %}
+                <article class="artist-card">
+                    <div class="card-title">{{ artist.name }}</div>
+                    <div class="artist-meta">
+                        <span>{{ artist.genre }}</span>
+                        <span>Popularity {{ artist.popularity }}</span>
+                    </div>
+                    <form action="{{ url_for('manage_artist', idx=loop.index0) }}">
+                        <button class="btn btn-primary fullwidth" type="submit">Manage</button>
+                    </form>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="card">
+            <p class="panel-copy">You haven't signed any artists yet.</p>
+        </div>
+    {% endif %}
+
+    <a class="btn btn-secondary fullwidth" href="{{ url_for('menu') }}">Back to Main Menu</a>
+</section>
+{% endblock %}

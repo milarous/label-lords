@@ -1,45 +1,34 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unsigned Artists</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 40px; }
-        .artist { border: 1px solid #ccc; padding: 10px; margin: 10px 0; }
-        button { padding: 10px; background: #007bff; color: white; border: none; cursor: pointer; }
-        button:hover { background: #0056b3; }
-        .back { margin-top: 20px; }
-    </style>
-</head>
-<body>
-    <h1>Unsigned Artists</h1>
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <div style="color: green; margin-bottom: 20px;">
-                {% for message in messages %}
-                    <p>{{ message }}</p>
-                {% endfor %}
-            </div>
-        {% endif %}
-    {% endwith %}
+{% extends 'base.html' %}
+
+{% block title %}Unsigned Artists{% endblock %}
+
+{% block page_title %}Unsigned Artists{% endblock %}
+
+{% block content %}
+<section class="page-panel">
     {% if game_state.unsigned_artists %}
-        {% for artist in game_state.unsigned_artists %}
-            <div class="artist">
-                <h3>{{ artist.name }} ({{ artist.genre }})</h3>
-                <p>Talent: {{ artist.talent }}</p>
-                <p>Popularity: {{ artist.popularity }}</p>
-                <p>Signing Cost: ${{ artist.signing_cost }}</p>
-                <form method="post" action="{{ url_for('sign_artist', idx=loop.index0) }}" style="display: inline;">
-                    <button type="submit">Sign for ${{ artist.signing_cost }}</button>
-                </form>
-            </div>
-        {% endfor %}
+        <div class="artist-grid">
+            {% for artist in game_state.unsigned_artists %}
+                <article class="artist-card">
+                    <div class="card-title">{{ artist.name }}</div>
+                    <div class="artist-meta">
+                        <span>{{ artist.genre }}</span>
+                        <span>Talent {{ artist.talent }}</span>
+                        <span>Popularity {{ artist.popularity }}</span>
+                    </div>
+                    <p class="card-copy">Signing Cost: ${{ artist.signing_cost }}</p>
+                    <form method="post" action="{{ url_for('sign_artist', idx=loop.index0) }}">
+                        <button class="btn btn-primary fullwidth" type="submit">Sign for ${{ artist.signing_cost }}</button>
+                    </form>
+                </article>
+            {% endfor %}
+        </div>
     {% else %}
-        <p>No unsigned artists left!</p>
+        <div class="card">
+            <p class="panel-copy">No unsigned artists left!</p>
+        </div>
     {% endif %}
-    <div class="back">
-        <a href="{{ url_for('menu') }}"><button>Back to Main Menu</button></a>
-    </div>
-</body>
-</html>
+
+    <a class="btn btn-secondary fullwidth" href="{{ url_for('menu') }}">Back to Main Menu</a>
+</section>
+{% endblock %}
