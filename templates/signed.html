@@ -6,10 +6,6 @@
 
 {% block content %}
 <section class="page-panel">
-    <div class="panel-copy">
-        <p>Funds: ${{ game_state.money }}</p>
-    </div>
-
     {% if game_state.signed_artists %}
         <div class="artist-grid">
             {% for artist in game_state.signed_artists %}

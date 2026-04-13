@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Default dark mode interface with updated dark theme styling.
 - Modernized responsive UI using a shared base template and card-based layout.
 - Updated page flow and buttons for clearer navigation and gameplay actions.
+- Redesigned home screen as a comprehensive dashboard with sidebar actions and main content displaying label overview and signed artists list.
+- Made status information (current week and funds) persist in header across all game pages.
+- Updated manage artist page navigation to return to main menu instead of signed artists page.
 
 ## [0.1.0] - 2026-04-12
 

@@ -1,25 +1,61 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ game_state.label_name }} Records - Main Menu{% endblock %}
+{% block title %}{{ game_state.label_name }} Records - Dashboard{% endblock %}
 
 {% block page_title %}{{ game_state.label_name }} Records{% endblock %}
 
 {% block content %}
-<section class="page-panel">
-    <div class="panel-copy">
-        <p><strong>{{ get_current_date(game_state.week, game_state.starting_year) }}</strong></p>
-        <p>Funds: ${{ game_state.money }}</p>
-    </div>
-    <div class="card-grid">
-        <form action="{{ url_for('unsigned') }}">
-            <button class="btn btn-primary fullwidth" type="submit">View Unsigned Artists</button>
-        </form>
-        <form action="{{ url_for('signed') }}">
-            <button class="btn btn-secondary fullwidth" type="submit">Manage Signed Artists</button>
-        </form>
-        <form method="post" action="{{ url_for('finish_week_route') }}">
-            <button class="btn btn-ghost fullwidth" type="submit">Finish Week</button>
-        </form>
-    </div>
-</section>
+<div class="dashboard">
+    <aside class="sidebar">
+        <h2>Actions</h2>
+        <div class="action-list">
+            <form action="{{ url_for('unsigned') }}">
+                <button class="btn btn-primary fullwidth" type="submit">View Unsigned Artists</button>
+            </form>
+            <form method="post" action="{{ url_for('finish_week_route') }}">
+                <button class="btn btn-ghost fullwidth" type="submit">Finish Week</button>
+            </form>
+        </div>
+    </aside>
+    <main class="main-content">
+        <section class="label-details">
+            <h2>Label Overview</h2>
+            <div class="profile-card">
+                <div class="profile-row">
+                    <div>
+                        <h3>{{ game_state.label_name }}</h3>
+                        <p>CEO: {{ game_state.ceo_name }}</p>
+                        <p>Location: {{ game_state.label_city }}, {{ game_state.label_country }}</p>
+                    </div>
+                    <div>
+                        <p>Week: {{ game_state.week }}</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="artists-section">
+            <h2>Signed Artists</h2>
+            {% if game_state.signed_artists %}
+                <div class="artist-grid">
+                    {% for artist in game_state.signed_artists %}
+                        <article class="artist-card">
+                            <div class="card-title">{{ artist.name }}</div>
+                            <div class="artist-meta">
+                                <span>{{ artist.genre }}</span>
+                                <span>Popularity {{ artist.popularity }}</span>
+                            </div>
+                            <form action="{{ url_for('manage_artist', idx=loop.index0) }}">
+                                <button class="btn btn-primary fullwidth" type="submit">Manage</button>
+                            </form>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="card">
+                    <p class="panel-copy">You haven't signed any artists yet.</p>
+                </div>
+            {% endif %}
+        </section>
+    </main>
+</div>
 {% endblock %}

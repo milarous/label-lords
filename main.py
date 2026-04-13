@@ -157,7 +157,7 @@ def menu():
 
 @app.route('/unsigned')
 def unsigned():
-    return render_template('unsigned.html', game_state=game_state)
+    return render_template('unsigned.html', game_state=game_state, get_current_date=get_current_date)
 
 @app.route('/sign_artist/<int:idx>', methods=['POST'])
 def sign_artist(idx):
@@ -173,12 +173,12 @@ def sign_artist(idx):
 
 @app.route('/signed')
 def signed():
-    return render_template('signed.html', game_state=game_state)
+    return render_template('signed.html', game_state=game_state, get_current_date=get_current_date)
 
 @app.route('/manage_artist/<int:idx>')
 def manage_artist(idx):
     artist = game_state.signed_artists[idx]
-    return render_template('manage_artist.html', artist=artist, idx=idx)
+    return render_template('manage_artist.html', artist=artist, idx=idx, game_state=game_state, get_current_date=get_current_date)
 
 @app.route('/promote_artist/<int:idx>', methods=['POST'])
 def promote_artist_route(idx):

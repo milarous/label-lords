@@ -18,11 +18,12 @@ A record label management simulation game, migrated from tkinter to Flask web ap
 
 ## Game Features
 
-- Set up your record label
-- View and sign unsigned artists
+- Set up your record label with custom name, CEO, and location
+- Comprehensive dashboard showing label overview and signed artists
+- View and sign unsigned artists from a talent pool
 - Manage signed artists: promote, release singles/albums
-- Finish weeks to earn revenue from releases
-- Revenue depreciates over time
+- Finish weeks to earn revenue from releases (with depreciation over time)
+- Persistent status display showing current week and funds across all pages
 - Standard dark mode UI with a modern responsive interface
 
 ## Migration Notes
