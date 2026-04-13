@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 import random
 import os
+import pickle
+from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = 'label_lords_secret_key'  # For session management
@@ -36,6 +38,121 @@ class GameState:
         }
 
 game_state = GameState()
+
+# Create save folder if needed
+if not os.path.exists('saves'):
+    os.makedirs('saves')
+
+# ==========================
+# === Save / Load System ===
+# ==========================
+
+def save_game(slot, label=""):
+    """Save the current game state to a slot."""
+    save_data = {
+        'game_state': game_state,
+        'label': label or f"Slot {slot}",
+        'timestamp': datetime.now().isoformat()
+    }
+    with open(f'saves/slot_{slot}.pkl', 'wb') as f:
+        pickle.dump(save_data, f)
+
+
+def load_game(slot):
+    """Load game state from a save slot."""
+    global game_state
+    file_path = f'saves/slot_{slot}.pkl'
+    if not os.path.exists(file_path):
+        return False
+    try:
+        with open(file_path, 'rb') as f:
+            save_data = pickle.load(f)
+        loaded_state = save_data.get('game_state')
+        if not isinstance(loaded_state, GameState):
+            return False
+        migrate_save_data(loaded_state)
+        game_state = loaded_state
+        return True
+    except Exception:
+        return False
+
+
+def delete_save(slot):
+    """Delete a save slot file."""
+    file_path = f'saves/slot_{slot}.pkl'
+    if os.path.exists(file_path):
+        os.remove(file_path)
+
+
+def get_save_slots():
+    """Return current save slot metadata for the UI."""
+    slots = {}
+    for i in range(1, 4):
+        file_path = f'saves/slot_{i}.pkl'
+        if os.path.exists(file_path):
+            try:
+                with open(file_path, 'rb') as f:
+                    save_data = pickle.load(f)
+                label = save_data.get('label', f'Slot {i}')
+                timestamp_str = save_data.get('timestamp', '')
+                formatted_time = 'Unknown'
+                if timestamp_str:
+                    try:
+                        formatted_time = datetime.fromisoformat(timestamp_str).strftime('%Y-%m-%d %H:%M:%S')
+                    except ValueError:
+                        formatted_time = timestamp_str
+
+                saved_state = save_data.get('game_state')
+                game_date = 'Unknown'
+                if isinstance(saved_state, GameState):
+                    game_date = get_current_date(getattr(saved_state, 'week', 1), getattr(saved_state, 'starting_year', 2000))
+
+                slots[i] = {
+                    'exists': True,
+                    'label': label,
+                    'timestamp': formatted_time,
+                    'game_date': game_date
+                }
+            except Exception:
+                slots[i] = {
+                    'exists': True,
+                    'label': f'Slot {i}',
+                    'timestamp': 'Unknown',
+                    'game_date': 'Unknown'
+                }
+        else:
+            slots[i] = {
+                'exists': False,
+                'label': '',
+                'timestamp': '',
+                'game_date': ''
+            }
+    return slots
+
+
+def migrate_save_data(state):
+    """Ensure loaded saves have required fields for newer versions."""
+    if not state:
+        return
+
+    if not hasattr(state, 'label_name'):
+        state.label_name = ''
+    if not hasattr(state, 'ceo_name'):
+        state.ceo_name = ''
+    if not hasattr(state, 'label_country'):
+        state.label_country = ''
+    if not hasattr(state, 'label_city'):
+        state.label_city = ''
+    if not hasattr(state, 'money'):
+        state.money = 5000
+    if not hasattr(state, 'week'):
+        state.week = 1
+    if not hasattr(state, 'starting_year'):
+        state.starting_year = 2000
+    if not hasattr(state, 'unsigned_artists'):
+        state.unsigned_artists = []
+    if not hasattr(state, 'signed_artists'):
+        state.signed_artists = []
 
 # ==========================
 # === Utility Functions ===
@@ -153,7 +270,31 @@ def setup():
 
 @app.route('/menu')
 def menu():
-    return render_template('menu.html', game_state=game_state, get_current_date=get_current_date)
+    save_slots = get_save_slots()
+    return render_template('menu.html', game_state=game_state, get_current_date=get_current_date, save_slots=save_slots)
+
+@app.route('/save_game/<int:slot>', methods=['POST'])
+def save_game_route(slot):
+    if 1 <= slot <= 3:
+        label = request.form.get('label', f'Slot {slot}')
+        save_game(slot, label)
+        flash(f'Saved to slot {slot}.')
+    return redirect(request.referrer or url_for('menu'))
+
+@app.route('/load_game/<int:slot>')
+def load_game_route(slot):
+    if 1 <= slot <= 3 and load_game(slot):
+        flash(f'Loaded slot {slot}.')
+        return redirect(url_for('menu'))
+    flash(f'Unable to load slot {slot}.')
+    return redirect(request.referrer or url_for('menu'))
+
+@app.route('/delete_game/<int:slot>')
+def delete_game_route(slot):
+    if 1 <= slot <= 3:
+        delete_save(slot)
+        flash(f'Deleted slot {slot}.')
+    return redirect(request.referrer or url_for('menu'))
 
 @app.route('/unsigned')
 def unsigned():

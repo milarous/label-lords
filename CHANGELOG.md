@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Redesigned home screen as a comprehensive dashboard with sidebar actions and main content displaying label overview and signed artists list.
 - Made status information (current week and funds) persist in header across all game pages.
 - Updated manage artist page navigation to return to main menu instead of signed artists page.
+- Added persistent save/load support with 3 local save slots and slot metadata display on the dashboard.
 
 ## [0.1.0] - 2026-04-12
 

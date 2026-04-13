@@ -24,6 +24,7 @@ A record label management simulation game, migrated from tkinter to Flask web ap
 - Manage signed artists: promote, release singles/albums
 - Finish weeks to earn revenue from releases (with depreciation over time)
 - Persistent status display showing current week and funds across all pages
+- Save and load game progress using 3 local save slots from the main dashboard
 - Standard dark mode UI with a modern responsive interface
 
 ## Migration Notes

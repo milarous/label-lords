@@ -16,6 +16,35 @@
                 <button class="btn btn-ghost fullwidth" type="submit">Finish Week</button>
             </form>
         </div>
+        <section class="save-panel">
+            <h2>Save / Load</h2>
+            {% for slot, meta in save_slots.items() %}
+                <div class="card save-card">
+                    <div class="save-row">
+                        <strong>Slot {{ slot }}</strong>
+                        {% if meta.exists %}
+                            <span>{{ meta.label }}</span>
+                        {% else %}
+                            <span>Empty</span>
+                        {% endif %}
+                    </div>
+                    {% if meta.exists %}
+                        <p class="panel-copy">Saved: {{ meta.timestamp }}</p>
+                        <p class="panel-copy">Date: {{ meta.game_date }}</p>
+                    {% endif %}
+                    <form method="post" action="{{ url_for('save_game_route', slot=slot) }}">
+                        <input class="input fullwidth" type="text" name="label" placeholder="Save label" value="{{ meta.label }}">
+                        <button class="btn btn-primary fullwidth" type="submit">Save</button>
+                    </form>
+                    {% if meta.exists %}
+                        <div class="action-list">
+                            <a class="btn btn-secondary fullwidth" href="{{ url_for('load_game_route', slot=slot) }}">Load</a>
+                            <a class="btn btn-ghost fullwidth" href="{{ url_for('delete_game_route', slot=slot) }}">Delete</a>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </section>
     </aside>
     <main class="main-content">
         <section class="label-details">
